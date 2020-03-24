@@ -43,7 +43,7 @@ class App extends React.Component {
                 key={key}
                 index={key}
                 details={this.state.fishes[key]}
-                addToOrder={this.addToOrder}
+                AddToOrder={this.addToOrder}
               />
             ))}
           </ul>

@@ -27,6 +27,17 @@ class App extends React.Component {
     this.setState({ fishes: sampleFishes });
   };
 
+  AddToOrder = key => {
+    const order = { ...this.state.order };
+    // if (key in order) {
+    //   order[key] = order[key] + 1;
+    // } else {
+    //   order[key] = 1;
+    // }
+    order[key] = order[key] + 1 || 1;
+    this.setState({ order });
+  };
+
   render() {
     return (
       <div className="catch-of-the-day">
@@ -36,11 +47,16 @@ class App extends React.Component {
             {/* Object.keys allows us to get an array of the fishes so that we can
             map over it as we cant map over Object (which the state is) */}
             {Object.keys(this.state.fishes).map(key => (
-              <Fish key={key} details={this.state.fishes[key]} />
+              <Fish
+                key={key}
+                index={key}
+                details={this.state.fishes[key]}
+                AddToOrder={this.AddToOrder}
+              />
             ))}
           </ul>
         </div>
-        <Order />
+        <Order fishes={this.state.fishes} order={this.state.order} />
         {/* We pass down the methods downstream as `props` */}
         <Inventory
           addFish={this.addFish}
