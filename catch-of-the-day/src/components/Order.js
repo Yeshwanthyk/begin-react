@@ -1,24 +1,51 @@
 import React from "react";
 import fishes from "../sample-fishes";
 import { formatPrice } from "../helpers";
+import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 class Order extends React.Component {
-  renderOrder = key => {
+  renderOrder = (key) => {
     const fish = this.props.fishes[key];
     const count = this.props.order[key];
-    const isAvailable = fish["status"] === "available";
+    const isAvailable = fish && fish["status"] === "available";
+
+    // We wait for fish to load when we get it from firebase when the component mounts
+    if (!fish) return null;
 
     if (!isAvailable) {
       return (
-        <li key={key}>Sorry, {fish ? fish.name : "fish"} not available</li>
+        <CSSTransition
+          classNames="order"
+          key={key}
+          timeout={{ enter: 500, exit: 500 }}
+        >
+          <li key={key}>Sorry, {fish ? fish.name : "fish"} not available</li>
+        </CSSTransition>
       );
     }
-
     return (
-      <li key={key}>
-        {count} lbs {fish.name}
-        {formatPrice(count * fish.price)}
-      </li>
+      <CSSTransition
+        classNames="order"
+        key={key}
+        timeout={{ enter: 500, exit: 500 }}
+      >
+        <li key={key}>
+          <span>
+            <TransitionGroup component="span" className="count">
+              <CSSTransition
+                classNames="count"
+                key={count}
+                timeout={{ enter: 500, exit: 500 }}
+              >
+                <span>{count}</span>
+              </CSSTransition>
+            </TransitionGroup>
+            lbs {fish.name}
+            {formatPrice(count * fish.price)}
+            <button onClick={() => this.props.DeleteFromOrder(key)}>x</button>
+          </span>
+        </li>
+      </CSSTransition>
     );
   };
 
@@ -41,7 +68,9 @@ class Order extends React.Component {
       <div className="order-wrap">
         <h2>Order</h2>
         <div className="total">
-          <ul className="order">{orderIds.map(this.renderOrder)}</ul>
+          <TransitionGroup component="ul" className="order">
+            {orderIds.map(this.renderOrder)}
+          </TransitionGroup>
           Total:
           <strong>{formatPrice(total)}</strong>
         </div>
