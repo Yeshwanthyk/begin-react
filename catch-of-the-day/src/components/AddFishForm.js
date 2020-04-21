@@ -1,20 +1,25 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 class AddFishForm extends React.Component {
+  static propTypes = {
+    addFish: PropTypes.func,
+  };
+
   nameRef = React.createRef();
   statusRef = React.createRef();
   descRef = React.createRef();
   imageRef = React.createRef();
   priceRef = React.createRef();
 
-  createFish = event => {
+  createFish = (event) => {
     event.preventDefault();
     const fish = {
       name: this.nameRef.current.value,
       price: parseFloat(this.priceRef.current.value),
       status: this.statusRef.current.value,
       desc: this.descRef.current.value,
-      image: this.imageRef.current.value
+      image: this.imageRef.current.value,
     };
     this.props.addFish(fish);
     // refresh the form
